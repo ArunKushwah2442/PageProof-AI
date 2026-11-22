@@ -1,0 +1,51 @@
+﻿group,question,expected
+doc_lookup,Who are the three authors of Fundamentals of Deep Learning?,Nithin Buduma; Nikhil Buduma; Joe Papa
+doc_lookup,Who is credited as a contributor?,Nicholas Locascio
+doc_lookup,Who published the book?,O'Reilly Media
+doc_lookup,When was the first edition published?,June 2017
+doc_lookup,When was the second edition published?,May 2022
+doc_lookup,What is Chapter 1 titled?,Fundamentals of Linear Algebra for Deep Learning
+doc_lookup,What is Chapter 2 titled?,Fundamentals of Probability
+doc_lookup,What is Chapter 7 titled?,Convolutional Neural Networks
+doc_lookup,Which deep learning library is used in the book's examples?,PyTorch
+doc_lookup,What is Chapter 13 titled?,Deep Reinforcement Learning
+concepts,What is a vector?,An ordered collection of numbers
+concepts,What is a matrix?,A two-dimensional array of values in rows and columns
+concepts,What is a random variable?,A numerical variable determined by a random outcome
+concepts,What is conditional probability?,Probability of an event given another event
+concepts,What does Bayes' theorem relate?,Prior probability; likelihood; evidence; posterior probability
+concepts,What is entropy?,A measure of uncertainty in a probability distribution
+concepts,What is a perceptron?,A basic artificial neuron computing a weighted input and activation
+concepts,What is ReLU?,"Rectified linear unit; max(0,x)"
+concepts,What is gradient descent?,Iterative minimization using negative gradients
+concepts,What is backpropagation?,Efficient computation of gradients through layers using chain rule
+concepts,What is overfitting?,Good training performance but poor generalization to unseen data
+concepts,What is dropout?,Randomly disabling some neural units during training to regularize
+concepts,What is a convolutional filter?,A shared kernel applied over local regions to create feature maps
+concepts,What is an autoencoder?,An encoder-decoder network trained to reconstruct inputs
+concepts,What is a deep Q-network?,A neural network approximating action-value Q-functions
+reasoning,Why are nonlinear activations needed in neural networks?,Without nonlinearities stacked linear layers remain equivalent to a single linear map
+reasoning,Why is matrix multiplication useful for neural networks?,Efficiently computes weighted combinations of inputs
+reasoning,How does the chain rule enable backpropagation?,Combines derivatives across layers to compute gradients
+reasoning,Why separate training and validation sets?,Train on one set and evaluate generalization on held-out data
+reasoning,How does dropout help prevent overfitting?,Discourages reliance on particular neurons and co-adaptation
+reasoning,What happens if the learning rate is too high?,Overshooting; instability; possible divergence
+reasoning,How does minibatch gradient descent differ from full-batch gradient descent?,Uses subsets of data rather than all examples per update
+reasoning,Why can momentum improve gradient descent?,Accumulates past gradients to smooth and accelerate updates
+reasoning,How does Adam combine momentum and RMSProp?,Uses moving averages of gradients and squared gradients
+reasoning,Why are CNNs efficient for image processing?,Local connections and shared weights exploit spatial structure
+reasoning,Why do RNNs struggle with long sequences?,Vanishing or exploding gradients impede long-range learning
+reasoning,How do word embeddings differ from one-hot vectors?,Dense learned semantic representations versus sparse indicators
+reasoning,Why does a denoising autoencoder reconstruct corrupted input?,To learn robust representations of underlying structure
+reasoning,How do a GAN generator and discriminator interact?,Generator creates samples; discriminator judges real versus fake
+reasoning,Why does experience replay help DQN training?,Reuses and decorrelates past transitions to improve learning stability
+not_in_doc,Who is the current CEO of Infosys?,I could not find this in the document.
+not_in_doc,What is today's weather in Indore?,I could not find this in the document.
+not_in_doc,What is the live price of Bitcoin?,I could not find this in the document.
+not_in_doc,What is the current salary of a TCS fresher in Indore?,I could not find this in the document.
+not_in_doc,Who won the 2026 FIFA World Cup?,I could not find this in the document.
+not_in_doc,What is my personal email address?,I could not find this in the document.
+not_in_doc,What is my Gmail password?,I could not find this in the document.
+not_in_doc,Which company will hire me next month?,I could not find this in the document.
+not_in_doc,What is the traffic outside my home right now?,I could not find this in the document.
+not_in_doc,What is the latest ChatGPT mobile app version today?,I could not find this in the document.

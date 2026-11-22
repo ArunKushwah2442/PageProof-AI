@@ -1,0 +1,1142 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PageProof | Smart Document Q&A</title>
+
+<style>
+:root {
+  --bg: #f4f3ff;
+  --panel: #ffffff;
+  --text: #14122b;
+  --muted: #6b6a85;
+  --line: #e6e4f5;
+  --accent: #5b4bff;
+  --soft: #eeebff;
+  --danger: #d92d20;
+  --g1: #5b4bff;
+  --g2: #0ea5c6;
+  --shadow: 0 10px 30px -12px rgba(91,75,255,.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0a18;
+    --panel: #14122a;
+    --text: #ecebff;
+    --muted: #9a98bd;
+    --line: #26234a;
+    --accent: #9487ff;
+    --soft: #211e48;
+    --danger: #f97066;
+    --g1: #7c6cff;
+    --g2: #22c3e6;
+  }
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+
+body {
+  font: 15px/1.6 Inter, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button, input, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button { cursor: pointer; }
+
+.btn {
+  background: linear-gradient(135deg,var(--g1),var(--g2));
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 18px;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+}
+
+.btn:hover:not(:disabled) { filter: brightness(1.08); }
+.btn:disabled { opacity: .5; cursor: default; }
+
+.ghost {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  padding: 7px;
+  border-radius: 8px;
+}
+
+.ghost:hover { background: var(--soft); }
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg,var(--g1),var(--g2));
+  display: grid;
+  place-items: center;
+  color: white;
+}
+
+.gradient {
+  background: linear-gradient(135deg,var(--g1),var(--g2));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Authentication */
+
+#auth {
+  min-height: 100%;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 56px;
+  background: linear-gradient(145deg,#2b1fd1,#5b4bff,#0ea5c6);
+  color: white;
+}
+
+.hero h2 {
+  font-size: clamp(30px,4vw,46px);
+  line-height: 1.15;
+  max-width: 480px;
+}
+
+.hero p { max-width: 430px; opacity: .9; }
+
+.hero ul {
+  list-style: none;
+  padding: 0;
+  line-height: 2.4;
+}
+
+.authside {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: var(--shadow);
+}
+
+.card h1 { margin-bottom: 5px; }
+.sub { color: var(--muted); font-size: 14px; }
+
+.tabs {
+  display: flex;
+  background: var(--bg);
+  padding: 4px;
+  border-radius: 11px;
+  margin: 20px 0;
+}
+
+.tab {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  padding: 9px;
+  border-radius: 8px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.tab.on {
+  background: var(--panel);
+  color: var(--accent);
+  box-shadow: 0 1px 4px #0002;
+}
+
+label {
+  display: block;
+  margin: 12px 0 5px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+input[type=text], input[type=password] {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.err {
+  color: var(--danger);
+  font-size: 13px;
+  min-height: 20px;
+}
+
+#authBtn { width: 100%; }
+
+/* Application */
+
+#app { display: flex; height: 100%; }
+
+aside {
+  width: 300px;
+  flex: none;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.drop {
+  margin-top: 20px;
+  padding: 22px 14px;
+  text-align: center;
+  border: 2px dashed var(--line);
+  border-radius: 14px;
+  background: var(--bg);
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.drop:hover, .drop.over {
+  border-color: var(--accent);
+  background: var(--soft);
+}
+
+.drop b {
+  display: block;
+  color: var(--accent);
+}
+
+.list-title {
+  margin: 24px 0 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+#docs {
+  flex: 1;
+  overflow: auto;
+}
+
+.doc {
+  padding: 11px;
+  margin-bottom: 5px;
+  border-radius: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.doc:hover { background: var(--bg); }
+.doc.on { background: var(--soft); }
+
+.doc .n {
+  flex: 1;
+  min-width: 0;
+}
+
+.doc b {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doc span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.me {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+}
+
+.av {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  display: grid;
+  place-items: center;
+}
+
+#uname {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+
+header h2 {
+  margin: 0;
+  font-size: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+header small {
+  color: var(--accent);
+  background: var(--soft);
+  border-radius: 20px;
+  padding: 3px 10px;
+}
+
+#menu { display: none; }
+
+#msgs {
+  flex: 1;
+  overflow: auto;
+  padding: 26px 22px;
+}
+
+.wrap {
+  max-width: 780px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.m {
+  display: flex;
+  flex-direction: column;
+  max-width: 88%;
+}
+
+.m.user {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.bub {
+  padding: 12px 16px;
+  border-radius: 16px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.user .bub {
+  background: linear-gradient(135deg,var(--g1),var(--g2));
+  color: white;
+}
+
+.bot .bub {
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.src {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.chip {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 4px 10px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.snip {
+  margin-top: 8px;
+  padding: 12px;
+  background: var(--soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+}
+
+.empty {
+  text-align: center;
+  margin: 9vh auto;
+  max-width: 480px;
+}
+
+.empty h3 {
+  font-size: 24px;
+  color: var(--accent);
+}
+
+.empty p { color: var(--muted); }
+
+.sugg {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.sugg button {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 9px 15px;
+  background: var(--panel);
+}
+
+.composer { padding: 16px 22px 22px; }
+
+.inputbox {
+  max-width: 780px;
+  margin: auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 9px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+textarea {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  resize: none;
+  padding: 9px;
+  outline: none;
+  max-height: 140px;
+}
+
+#toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: var(--text);
+  color: var(--bg);
+  z-index: 20;
+}
+
+#toast.bad {
+  background: var(--danger);
+  color: white;
+}
+
+@media(max-width:900px) {
+  #auth { grid-template-columns: 1fr; }
+  .hero { display: none; }
+}
+
+@media(max-width:800px) {
+  aside {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 5;
+    transform: translateX(-100%);
+    transition: transform .2s;
+  }
+  aside.open {
+    transform: none;
+    box-shadow: 0 0 0 100vmax #0007;
+  }
+  #menu { display: block; }
+}
+</style>
+</head>
+
+<body>
+
+<section id="auth" hidden>
+  <div class="hero">
+    <div class="brand">
+      <div class="logo">â–¤</div>
+      PageProof
+    </div>
+
+    <h2>Ask your documents. Get answers with proof.</h2>
+    <p>
+      Upload any PDF and chat with it.
+      Every answer points to the page it came from.
+    </p>
+
+    <ul>
+      <li>âœ“ Page-level citations on every answer</li>
+      <li>âœ“ Answers come from your own document</li>
+      <li>âœ“ Private chat history for each document</li>
+    </ul>
+  </div>
+
+  <div class="authside">
+    <div class="card">
+      <h1>Welcome to <span class="gradient">PageProof</span></h1>
+      <p class="sub">Upload PDFs and get answers with page references.</p>
+
+      <div class="tabs">
+        <button class="tab on" data-mode="login" type="button">Sign in</button>
+        <button class="tab" data-mode="register" type="button">Create account</button>
+      </div>
+
+      <form id="authForm">
+        <label for="user">Username</label>
+        <input id="user" type="text" autocomplete="username" required>
+
+        <label for="pass">Password</label>
+        <input id="pass" type="password" autocomplete="current-password" required>
+
+        <p id="authErr" class="err" role="alert"></p>
+        <button id="authBtn" class="btn" type="submit">Sign in</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div id="app" hidden>
+  <aside id="side">
+    <div class="brand">
+      <div class="logo">â–¤</div>
+      PageProof
+    </div>
+
+    <div class="drop" id="drop" tabindex="0" role="button">
+      <b id="dropT">Upload a PDF</b>
+      <span id="dropS">Drop a file here or click to browse</span>
+      <input type="file" id="file" accept=".pdf,application/pdf" hidden>
+    </div>
+
+    <div class="list-title">Your documents</div>
+    <div id="docs"></div>
+
+    <div class="me">
+      <div class="av" id="av">U</div>
+      <span id="uname">User</span>
+      <button class="ghost" id="logout">Sign out</button>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <button class="ghost" id="menu">Documents</button>
+      <h2 id="title">No document selected</h2>
+      <small id="meta"></small>
+    </header>
+
+    <div id="msgs">
+      <div class="wrap" id="wrap"></div>
+    </div>
+
+    <div class="composer">
+      <div class="inputbox">
+        <textarea
+          id="input"
+          rows="1"
+          placeholder="Ask a question about this document"
+          disabled
+        ></textarea>
+        <button class="btn" id="send" disabled>Send</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast" hidden></div>
+
+<script>
+"use strict";
+
+// Backend configuration
+const API_BASE_URL = "http://127.0.0.1:8000";
+
+const $ = selector => document.querySelector(selector);
+
+let token = null;
+let docs = [];
+let cur = null;
+let sending = false;
+let mode = "login";
+
+try {
+  token = localStorage.getItem("token");
+} catch (e) {
+  token = null;
+}
+
+function toast(message, bad = false) {
+  const el = $("#toast");
+  el.textContent = message;
+  el.className = bad ? "bad" : "";
+  el.hidden = false;
+
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => {
+    el.hidden = true;
+  }, 3500);
+}
+
+// API requests
+async function api(path, options = {}) {
+  const headers = {
+    ...(options.headers || {}),
+    ...(token ? { Authorization: "Bearer " + token } : {})
+  };
+
+  let response;
+
+  try {
+    response = await fetch(API_BASE_URL + path, {
+      ...options,
+      headers
+    });
+  } catch (error) {
+    console.error("API connection failed:", error);
+    throw new Error(
+      "Cannot connect to backend. Check FastAPI and CORS configuration."
+    );
+  }
+
+  let data = null;
+
+  try {
+    data = await response.json();
+  } catch (e) {}
+
+  if (response.status === 401 && token) {
+    signOut();
+    throw new Error("Session expired. Sign in again.");
+  }
+
+  if (!response.ok) {
+    const detail = data && data.detail;
+    throw new Error(
+      typeof detail === "string"
+        ? detail
+        : "Request failed (" + response.status + ")"
+    );
+  }
+
+  return data;
+}
+
+// Authentication
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.onclick = () => {
+    mode = tab.dataset.mode;
+
+    document.querySelectorAll(".tab").forEach(item => {
+      item.classList.toggle("on", item === tab);
+    });
+
+    $("#authBtn").textContent =
+      mode === "login" ? "Sign in" : "Create account";
+
+    $("#authErr").textContent = "";
+    $("#pass").autocomplete =
+      mode === "login" ? "current-password" : "new-password";
+  };
+});
+
+$("#authForm").onsubmit = async event => {
+  event.preventDefault();
+
+  const username = $("#user").value.trim();
+  const password = $("#pass").value;
+
+  if (!username || !password) return;
+
+  $("#authBtn").disabled = true;
+  $("#authErr").textContent = "";
+
+  try {
+    if (mode === "register") {
+      await api("/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          password
+        })
+      });
+    }
+
+    const form = new URLSearchParams();
+    form.append("username", username);
+    form.append("password", password);
+
+    const result = await api("/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: form
+    });
+
+    token = result.access_token;
+
+    try {
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", username);
+    } catch (e) {}
+
+    start();
+  } catch (error) {
+    $("#authErr").textContent = error.message;
+  } finally {
+    $("#authBtn").disabled = false;
+  }
+};
+
+function signOut() {
+  token = null;
+  cur = null;
+  docs = [];
+
+  try {
+    localStorage.removeItem("token");
+  } catch (e) {}
+
+  show();
+}
+
+$("#logout").onclick = signOut;
+
+function show() {
+  $("#auth").hidden = Boolean(token);
+  $("#app").hidden = !token;
+}
+
+// Documents
+async function loadDocs() {
+  docs = await api("/documents");
+
+  if (cur && !docs.some(doc => doc.id === cur.id)) {
+    cur = null;
+  }
+
+  renderDocs();
+
+  if (!cur && docs.length) {
+    await select(docs[0].id);
+  } else if (!cur) {
+    clearChat();
+  }
+}
+
+function renderDocs() {
+  const container = $("#docs");
+  container.innerHTML = "";
+
+  if (!docs.length) {
+    const empty = document.createElement("p");
+    empty.textContent = "No documents yet. Upload a PDF to begin.";
+    empty.style.color = "var(--muted)";
+    container.appendChild(empty);
+    return;
+  }
+
+  docs.forEach(doc => {
+    const item = document.createElement("div");
+    item.className = "doc" +
+      (cur && cur.id === doc.id ? " on" : "");
+
+    const info = document.createElement("div");
+    info.className = "n";
+
+    const name = document.createElement("b");
+    name.textContent = doc.filename;
+
+    const details = document.createElement("span");
+    details.textContent =
+      `${doc.pages} pages, ${doc.chunks} sections`;
+
+    info.append(name, details);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "ghost";
+    deleteBtn.textContent = "Delete";
+
+    deleteBtn.onclick = async event => {
+      event.stopPropagation();
+
+      if (!confirm(`Delete "${doc.filename}"?`)) return;
+
+      try {
+        await api("/documents/" + doc.id, {
+          method: "DELETE"
+        });
+
+        if (cur && cur.id === doc.id) cur = null;
+
+        await loadDocs();
+        toast("Document deleted");
+      } catch (error) {
+        toast(error.message, true);
+      }
+    };
+
+    item.append(info, deleteBtn);
+
+    item.onclick = () => {
+      select(doc.id);
+      $("#side").classList.remove("open");
+    };
+
+    container.appendChild(item);
+  });
+}
+
+async function select(id) {
+  cur = docs.find(doc => doc.id === id);
+  if (!cur) return;
+
+  renderDocs();
+
+  $("#title").textContent = cur.filename;
+  $("#meta").textContent = cur.pages + " pages";
+  $("#input").disabled = false;
+  $("#send").disabled = false;
+
+  clearChat(true);
+
+  try {
+    const history = await api("/history/" + id);
+
+    if (!history.length) {
+      showEmpty();
+      return;
+    }
+
+    history.forEach(message => {
+      addMsg("user", message.question);
+
+      const sources = message.source_pages
+        ? message.source_pages.split(",").map(page => ({
+            page: Number(page)
+          }))
+        : [];
+
+      addMsg("bot", message.answer, sources);
+    });
+  } catch (error) {
+    toast(error.message, true);
+  }
+}
+
+function clearChat(keepInput = false) {
+  $("#wrap").innerHTML = "";
+
+  if (!keepInput) {
+    $("#title").textContent = "No document selected";
+    $("#meta").textContent = "";
+    $("#input").disabled = true;
+    $("#send").disabled = true;
+    showEmpty();
+  }
+}
+
+function showEmpty() {
+  const container = $("#wrap");
+  container.innerHTML = "";
+
+  const empty = document.createElement("div");
+  empty.className = "empty";
+
+  const heading = document.createElement("h3");
+  const description = document.createElement("p");
+
+  if (!cur) {
+    heading.textContent = "Upload a PDF to get started";
+    description.textContent =
+      "Upload a document and ask questions about its contents.";
+  } else {
+    heading.textContent = "Ask anything about this document";
+    description.textContent =
+      "Answers are generated using your uploaded document.";
+  }
+
+  empty.append(heading, description);
+
+  if (cur) {
+    const suggestions = document.createElement("div");
+    suggestions.className = "sugg";
+
+    [
+      "Summarize this document",
+      "What are the key points?",
+      "List the main topics covered"
+    ].forEach(question => {
+      const button = document.createElement("button");
+      button.textContent = question;
+      button.onclick = () => send(question);
+      suggestions.appendChild(button);
+    });
+
+    empty.appendChild(suggestions);
+  }
+
+  container.appendChild(empty);
+}
+
+// PDF upload
+const drop = $("#drop");
+const fileInput = $("#file");
+
+drop.onclick = () => fileInput.click();
+
+drop.onkeydown = event => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    fileInput.click();
+  }
+};
+
+fileInput.onchange = () => upload(fileInput.files[0]);
+
+["dragover", "dragenter"].forEach(name => {
+  drop.addEventListener(name, event => {
+    event.preventDefault();
+    drop.classList.add("over");
+  });
+});
+
+["dragleave", "drop"].forEach(name => {
+  drop.addEventListener(name, event => {
+    event.preventDefault();
+    drop.classList.remove("over");
+  });
+});
+
+drop.addEventListener("drop", event => {
+  const file = event.dataTransfer.files[0];
+  upload(file);
+});
+
+async function upload(file) {
+  if (!file) return;
+
+  if (!/\.pdf$/i.test(file.name)) {
+    toast("Only PDF files are supported", true);
+    return;
+  }
+
+  $("#dropT").textContent = "Processing...";
+  $("#dropS").textContent = file.name;
+  drop.style.pointerEvents = "none";
+
+  const form = new FormData();
+  form.append("file", file);
+
+  try {
+    const result = await api("/upload", {
+      method: "POST",
+      body: form
+    });
+
+    await loadDocs();
+    await select(result.id);
+
+    toast("Indexed " + result.pages + " pages");
+  } catch (error) {
+    toast(error.message, true);
+  } finally {
+    $("#dropT").textContent = "Upload a PDF";
+    $("#dropS").textContent =
+      "Drop a file here or click to browse";
+
+    drop.style.pointerEvents = "";
+    fileInput.value = "";
+  }
+}
+
+// Chat
+function addMsg(role, message, sources = []) {
+  const container = $("#wrap");
+
+  const empty = container.querySelector(".empty");
+  if (empty) empty.remove();
+
+  const item = document.createElement("div");
+  item.className = "m " + role;
+
+  const bubble = document.createElement("div");
+  bubble.className = "bub";
+  bubble.textContent = String(message ?? "");
+
+  item.appendChild(bubble);
+
+  if (sources && sources.length) {
+    const row = document.createElement("div");
+    row.className = "src";
+
+    const seen = new Set();
+
+    sources.forEach(source => {
+      if (seen.has(source.page) && !source.snippet) return;
+      seen.add(source.page);
+
+      const chip = document.createElement(
+        source.snippet ? "button" : "span"
+      );
+
+      chip.className = "chip";
+      chip.textContent = "p. " + source.page;
+
+      if (source.snippet) {
+        chip.onclick = () => {
+          const old = item.querySelector(".snip");
+          if (old) {
+            old.remove();
+            return;
+          }
+
+          const snippet = document.createElement("div");
+          snippet.className = "snip";
+          snippet.textContent = source.snippet;
+          item.appendChild(snippet);
+        };
+      }
+
+      row.appendChild(chip);
+    });
+
+    item.appendChild(row);
+  }
+
+  container.appendChild(item);
+  $("#msgs").scrollTop = $("#msgs").scrollHeight;
+
+  return item;
+}
+
+async function send(question) {
+  question = (question || $("#input").value).trim();
+
+  if (!question || !cur || sending) return;
+
+  sending = true;
+  $("#send").disabled = true;
+
+  $("#input").value = "";
+  $("#input").style.height = "auto";
+
+  addMsg("user", question);
+
+  const pending = addMsg("bot", "Thinking...");
+
+  try {
+    const result = await api("/ask", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        document_id: cur.id,
+        question,
+        use_history: true
+      })
+    });
+
+    pending.remove();
+    addMsg("bot", result.answer, result.sources);
+  } catch (error) {
+    pending.remove();
+    addMsg("bot", "Could not get an answer: " + error.message);
+  } finally {
+    sending = false;
+    $("#send").disabled = false;
+    $("#input").focus();
+  }
+}
+
+$("#send").onclick = () => send();
+
+$("#input").onkeydown = event => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    send();
+  }
+};
+
+$("#input").oninput = event => {
+  event.target.style.height = "auto";
+  event.target.style.height =
+    Math.min(event.target.scrollHeight, 140) + "px";
+};
+
+$("#menu").onclick = () => {
+  $("#side").classList.toggle("open");
+};
+
+// Initialize
+async function start() {
+  show();
+
+  let username = "User";
+
+  try {
+    username = localStorage.getItem("user") || "User";
+  } catch (e) {}
+
+  $("#uname").textContent = username;
+  $("#av").textContent = username[0].toUpperCase();
+
+  try {
+    await loadDocs();
+  } catch (error) {
+    toast(error.message, true);
+  }
+}
+
+if (token) {
+  start();
+} else {
+  show();
+}
+</script>
+</body>
+</html>

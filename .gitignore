@@ -1,0 +1,29 @@
+# Secrets
+.env
+.env.*
+!.env.example
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+.pytest_cache/
+.cache/
+# Database
+*.db
+*.sqlite
+*.sqlite3
+# Vector database
+chroma_db/
+# Uploaded files
+uploads/
+*.pdf
+# Evaluation outputs
+evaluation_results.csv
+evaluation_failed_results.csv
+# Editor files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
