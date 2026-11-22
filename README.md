@@ -273,6 +273,18 @@ Local-only artifacts such as `.env`, `app.db`, `chroma_db/`, `uploads/`, and eva
 
 ## Screenshots
 
+## Application Screenshots
+
+### 1. Landing Page and Authentication
+![PageProof-AI Login](screenshots/01-landing-page.png)
+
+### 2. Document Question Answering with Citations
+![PageProof-AI RAG Demo](screenshots/02-rag-question-answer.png)
+
+### 3. Document Management Dashboard
+![PageProof-AI Dashboard](screenshots/03-document-dashboard.png)
+
+
 Add real screenshots after verifying that no API keys, personal data, or private PDF content is visible.
 
 Suggested captures:
