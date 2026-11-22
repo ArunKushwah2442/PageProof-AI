@@ -4,6 +4,7 @@
 import os
 import uuid
 import shutil
+import logging
 from typing import List
 
 from fastapi import (
@@ -29,6 +30,8 @@ from app.auth import (
 from app.config import UPLOAD_DIR
 from app.database import Base, engine, get_db
 from app.rag import VectorStore, DocumentProcessor, QAEngine
+
+logger = logging.getLogger(__name__)
 
 
 # --------------------------------------------------
@@ -251,40 +254,56 @@ def upload(
             doc.id,
         )
 
+        # A document with no searchable chunks must not be marked successful.
+        if not doc.chunks or int(doc.chunks) <= 0:
+            raise HTTPException(
+                status_code=422,
+                detail=(
+                    "No readable text was found in this PDF. "
+                    "Please upload a text-based PDF; scanned PDFs may require OCR."
+                ),
+            )
+
         db.commit()
         db.refresh(doc)
 
         return doc
 
-    except Exception as e:
-        # Remove partially indexed chunks if necessary.
-        cleanup_error = None
-
+    except Exception as exc:
+        # Best-effort cleanup of any partial vector index and uploaded file.
         try:
             processor.delete(doc.id)
-        except Exception as exc:
-            cleanup_error = exc
+        except Exception:
+            logger.exception("Could not clean up vectors for document %s", doc.id)
 
-        # Remove the uploaded file.
-        if os.path.exists(path):
-            os.remove(path)
+        try:
+            if os.path.exists(path):
+                os.remove(path)
+        except OSError:
+            logger.exception("Could not remove failed upload for document %s", doc.id)
 
-        # Remove incomplete document record.
-        db.delete(doc)
-        db.commit()
+        # Roll back any uncommitted state before removing the document record.
+        db.rollback()
+        try:
+            db.delete(doc)
+            db.commit()
+        except Exception:
+            db.rollback()
+            logger.exception("Could not remove failed document record %s", doc.id)
+            raise HTTPException(
+                status_code=500,
+                detail="Upload failed and cleanup was incomplete.",
+            ) from None
 
-        detail = f"Could not process PDF: {e}"
+        if isinstance(exc, HTTPException):
+            raise exc
 
-        if cleanup_error:
-            detail += (
-                "; vector cleanup also failed: "
-                f"{cleanup_error}"
-            )
-
+        logger.exception("PDF processing failed for document %s", doc.id,
+                         exc_info=(type(exc), exc, exc.__traceback__))
         raise HTTPException(
             status_code=500,
-            detail=detail,
-        )
+            detail="Could not process PDF. Please try a valid text-based PDF.",
+        ) from None
 
     finally:
         file.file.close()

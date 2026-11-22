@@ -482,13 +482,68 @@ textarea {
     transform: translateX(-100%);
     transition: transform .2s;
   }
+
   aside.open {
     transform: none;
     box-shadow: 0 0 0 100vmax #0007;
   }
+
   #menu { display: block; }
 }
+
+/* Markdown formatting for AI answers */
+.bot .bub {
+  white-space: normal;
+}
+
+.bot .bub p {
+  margin: 0 0 10px;
+}
+
+.bot .bub p:last-child {
+  margin-bottom: 0;
+}
+
+.bot .bub ul,
+.bot .bub ol {
+  padding-left: 22px;
+  margin: 8px 0;
+}
+
+.bot .bub h1,
+.bot .bub h2,
+.bot .bub h3 {
+  margin: 12px 0 8px;
+  line-height: 1.4;
+}
+
+.bot .bub table {
+  border-collapse: collapse;
+  width: 100%;
+  display: block;
+  overflow-x: auto;
+  margin: 10px 0;
+}
+
+.bot .bub th,
+.bot .bub td {
+  border: 1px solid var(--line);
+  padding: 8px;
+  text-align: left;
+}
+
+.bot .bub pre {
+  overflow-x: auto;
+  padding: 10px;
+  background: var(--soft);
+  border-radius: 8px;
+}
+
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+
 </head>
 
 <body>
@@ -1005,7 +1060,12 @@ function addMsg(role, message, sources = []) {
 
   const bubble = document.createElement("div");
   bubble.className = "bub";
+  if (role === "bot" && window.marked && window.DOMPurify) {
+  const rawHtml = marked.parse(String(message ?? ""));
+  bubble.innerHTML = DOMPurify.sanitize(rawHtml);
+} else {
   bubble.textContent = String(message ?? "");
+}
 
   item.appendChild(bubble);
 
